@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphEditor", "GraphEditor\GraphEditor.csproj", "{3EA57BF6-3A90-4855-A3DF-BA9AA23F1134}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FractTreeWinF", "FractTreeWinF\FractTreeWinF.csproj", "{A175AA64-166A-469B-B430-6A87136A9F85}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3EA57BF6-3A90-4855-A3DF-BA9AA23F1134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EA57BF6-3A90-4855-A3DF-BA9AA23F1134}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EA57BF6-3A90-4855-A3DF-BA9AA23F1134}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EA57BF6-3A90-4855-A3DF-BA9AA23F1134}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A175AA64-166A-469B-B430-6A87136A9F85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A175AA64-166A-469B-B430-6A87136A9F85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A175AA64-166A-469B-B430-6A87136A9F85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A175AA64-166A-469B-B430-6A87136A9F85}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EEC5EDCF-8688-49C6-BED1-D984F83A6A14}
+	EndGlobalSection
+EndGlobal
