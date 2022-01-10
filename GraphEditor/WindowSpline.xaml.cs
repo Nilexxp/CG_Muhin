@@ -15,9 +15,12 @@ namespace GraphEditor
     
     public partial class WindowSpline : Window
     {
-        const int NumOfPoints = 10;
+        int NumOfPoints = 10;
 
+        void GenerateLine()
+        {
 
+        }
         Random random = new Random();
         public WindowSpline()
         {
@@ -28,7 +31,7 @@ namespace GraphEditor
             int cnt = 0;
             int cnt2 = 0;
 
-            
+            // Острая линия
             Polygon myPolygon = new Polygon();
             myPolygon.Stroke = Brushes.DarkBlue; 
             myPolygon.StrokeThickness = 2;
@@ -59,19 +62,24 @@ namespace GraphEditor
                     cnt2++;
                 }
             }
+            // Сплайн
             Polyline mySplinePolygon = new Polyline();
             mySplinePolygon.Stroke = Brushes.DarkCyan; 
             mySplinePolygon.StrokeThickness = 2;
             mySplinePolygon.HorizontalAlignment = HorizontalAlignment.Left;
             mySplinePolygon.VerticalAlignment = VerticalAlignment.Center;
             PointCollection mySplinePointCollection = new PointCollection();
+
             for (int i = 0; i < NumOfPoints * 10; i++)
             {
                 mySplinePointCollection.Add(new Point(coordSpline[i, 0], coordSpline[i, 1]));
             }
+
             mySplinePointCollection.Add(new Point(coordSpline[0, 0], coordSpline[0, 1]));
             mySplinePolygon.Points = mySplinePointCollection;
             paintSurface.Children.Add(mySplinePolygon);
+
+            ResetControls();
         }
 
         public struct Marker
@@ -237,12 +245,13 @@ namespace GraphEditor
                         paintSurface.InvalidateVisual();
                         break;
                     }
-                    catch (Exception e1)
+                    catch
                     {
                         polygon = null; continue;
                     }
 
                 }
+
                 double[,] coord = new double[NumOfPoints, 2];
                 double[,] coordSpline = new double[NumOfPoints * 10, 2];
                 int cnt = 0;
@@ -280,6 +289,7 @@ namespace GraphEditor
                 list = null;
             }
         }
+
         /// <summary>
         /// Вычсляет Сплайн, на входе все точки и индекс текущей точки
         /// </summary>
@@ -342,51 +352,49 @@ namespace GraphEditor
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.IsRepeat) { return; }
-            string write = "";
+            //string write = "";
             switch (e.Key)
             {
-                //надо переделывать
                 #region загрузка и сохранение
                 case Key.S:
                     //сохранение
-                    Line newLine;
-                    foreach (object foundLine in paintSurface.Children)
-                    {
-                        //попытка преобразовать объект в линию
-                        try
-                        {
-                            newLine = (Line)foundLine;
-                        }
-                        //если не получается - переход к следующему объекту
-                        catch (Exception)
-                        {
-                            newLine = null; continue;
-                        }
-                        //запись координат линии
-                        write += newLine.X1 + " " + newLine.Y1 + " " + newLine.X2 + " " + newLine.Y2 + "\n";
-                    }
-                    WriteSave(write);
+                    //Line newLine;
+                    //foreach (object foundLine in paintSurface.Children)
+                    //{
+                    //    //попытка преобразовать объект в линию
+                    //    try
+                    //    {
+                    //        newLine = (Line)foundLine;
+                    //    }
+                    //    //если не получается - переход к следующему объекту
+                    //    catch (Exception)
+                    //    {
+                    //        newLine = null; continue;
+                    //    }
+                    //    //запись координат линии
+                    //    write += newLine.X1 + " " + newLine.Y1 + " " + newLine.X2 + " " + newLine.Y2 + "\n";
+                    //}
+                    //WriteSave(write);
                     break;
                 case Key.L:
                     //загрузка
-                    double[,] save = ReadSave();
-                    if (save != null)
-                        //перебор и добавление
-                        for (int i = 0; i < save.GetLength(0); i++)
-                        {
-                            //создается новая линия
-                            Line newline = new Line
-                            {
-                                Stroke = new SolidColorBrush(Colors.Black),
-                                X1 = save[i, 0],
-                                Y1 = save[i, 1],
-                                X2 = save[i, 2],
-                                Y2 = save[i, 3]
-                            };
-                            //currentPoint = e.GetPosition(this);
-                            newline.Name = "line_" + 0;
-                            paintSurface.Children.Add(newline);
-                        }
+                    //double[,] save = ReadSave();
+                    //if (save != null)
+                    //    //перебор и добавление
+                    //    for (int i = 0; i < save.GetLength(0); i++)
+                    //    {
+                    //        //создается новая линия
+                    //        Line newline = new Line
+                    //        {
+                    //            Stroke = new SolidColorBrush(Colors.Black),
+                    //            X1 = save[i, 0],
+                    //            Y1 = save[i, 1],
+                    //            X2 = save[i, 2],
+                    //            Y2 = save[i, 3]
+                    //        };
+                    //        //currentPoint = e.GetPosition(this);
+                    //        paintSurface.Children.Add(newline);
+                    //    }
                     break;
                 #endregion
                 case Key.E:
@@ -398,7 +406,7 @@ namespace GraphEditor
 
         }
 
-        string saveFilter = "Файлы сохранения сплайна (*.ssave)|*.msave|Любые типы файлов (*.*)|*.*";
+        string saveFilter = "Файлы сохранения сплайна (*.ssave)|*.ssave|Любые типы файлов (*.*)|*.*";
 
         private void WriteSave(string data)
         {
@@ -433,6 +441,12 @@ namespace GraphEditor
                 return read;
             }
             return null;
+        }
+
+        private void ResetControls()
+        {
+            labelButtons.Content =
+@"E: Выход";
         }
     }
 }
