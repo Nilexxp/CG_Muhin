@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GraphEditor"
         mc:Ignorable="d"
-        Title="Графический редактор" Height="600" Width="1280" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" Topmost="True" Icon="/pngegg.ico" WindowStyle="SingleBorderWindow">
+        Title="Графический редактор" Height="600" Width="1280" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" Icon="/pngegg.ico" WindowStyle="SingleBorderWindow">
     <Window.Background>
         <SolidColorBrush Color="#FFE0E2FF"/>
     </Window.Background>

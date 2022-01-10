@@ -2,17 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace GraphEditor
@@ -51,7 +44,7 @@ namespace GraphEditor
             InitializeComponent();
             paintSurface.Focusable = true;
             paintSurface.Focus();
-            labelMousePoint.Content = "";
+            //labelMousePoint.Content = "";
             labelLine.Content = "";
             ResetControls();
 
@@ -76,7 +69,12 @@ M: Проекция на OY
 -: Очистка группы 
 R: Поворот
 S: Сохранение 
-L: Загрузка";
+L: Загрузка
+NumPad 1: Морфинг
+NumPad 2: Сплайн
+NumPad 3: Дерево
+
+E: Выход";
         }
 
         private new void KeyDown(object sender, KeyEventArgs e)
@@ -306,10 +304,23 @@ L: Загрузка";
                             paintSurface.Children.Add(newline);
                         }
                     break;
-                    #endregion
+                #endregion
+                #region открытие новых окон
+                case Key.NumPad1:
+                    WindowMorph morph = new WindowMorph();
+                    morph.Show();
+                    break;
+                case Key.NumPad2:
+                    WindowSpline spline = new WindowSpline();
+                    spline.Show();
+                    break;
+                #endregion
+                case Key.E:
+                    this.Close();
+                    break;
             }
         }
-        string saveFilter = "Файлы сохранения линий (*.lsave)|*.lsave|Любые типы файлов (*.*)|*.*";
+        string saveFilter = "Файлы сохранения редактора (*.rsave)|*.rsave|Любые типы файлов (*.*)|*.*";
         //запись в строке: х1,у1,х2,у2 новая строка
         private void WriteSave(string data)
         {

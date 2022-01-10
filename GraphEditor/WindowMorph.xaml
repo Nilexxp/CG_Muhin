@@ -1,0 +1,17 @@
+﻿<Window x:Class="GraphEditor.WindowMorph"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GraphEditor"
+        mc:Ignorable="d"
+        Title="Морфинг" Height="600" Width="1280" Icon="/pngegg.ico" KeyDown="Window_KeyDown" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
+    <Window.Background>
+        <SolidColorBrush Color="#FFE0E2FF"/>
+    </Window.Background>
+    <Grid>
+        <Canvas x:Name="paintSurface" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseUp="paintSurface_MouseUp" Margin="0,0,230,45"/>
+        <Label x:Name="labelButtons" Content="Подсказка по клавишам" HorizontalAlignment="Left" Margin="1050,0,0,0" VerticalAlignment="Center" Width="220" Height="564" HorizontalContentAlignment="Center" Background="{x:Null}" FontFamily="GOST type B" FontSize="14"/>
+        <Label x:Name="labelMousePoint" Content="Данные Указателя Мыши" HorizontalAlignment="Left" Margin="10,544,0,0" VerticalAlignment="Top" Height="30" Width="452" FontFamily="GOST type B" FontSize="16" HorizontalContentAlignment="Center"/>
+    </Grid>
+</Window>
