@@ -10,9 +10,9 @@
         <SolidColorBrush Color="#FFE0E2FF"/>
     </Window.Background>
     <Grid>
-        <Canvas x:Name="paintSurface" Margin="0,0,230,45" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseUp="paintSurface_MouseUp"/>
+        <Canvas x:Name="paintSurface" Margin="0,0,235,45" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" Background="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}" MouseUp="paintSurface_MouseUp"/>
         <Label x:Name="labelButtons" Content="Подсказка по клавишам" HorizontalAlignment="Left" Margin="1050,0,0,0" VerticalAlignment="Center" Width="220" Height="564" HorizontalContentAlignment="Center" Background="{x:Null}" FontFamily="GOST type B" FontSize="14"/>
-        <Label x:Name="labelMousePoint" Content="Данные Указателя Мыши" HorizontalAlignment="Left" Margin="10,544,0,0" VerticalAlignment="Top" Height="30" Width="452" FontFamily="GOST type B" FontSize="16" HorizontalContentAlignment="Center"/>
+        <Label x:Name="labelMousePoint" Content="Данные Указателя Мыши" HorizontalAlignment="Left" Margin="10,526,0,0" VerticalAlignment="Top" Height="30" Width="452" FontFamily="GOST type B" FontSize="16" HorizontalContentAlignment="Center"/>
 
     </Grid>
 </Window>
