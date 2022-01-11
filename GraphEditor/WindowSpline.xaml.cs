@@ -17,10 +17,6 @@ namespace GraphEditor
     {
         int NumOfPoints = 10;
 
-        void GenerateLine()
-        {
-
-        }
         Random random = new Random();
         public WindowSpline()
         {
