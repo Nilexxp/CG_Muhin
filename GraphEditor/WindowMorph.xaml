@@ -13,5 +13,6 @@
         <Canvas x:Name="paintSurface" MouseDown="Canvas_MouseDown" MouseMove="Canvas_MouseMove" Background="{DynamicResource {x:Static SystemColors.MenuBrushKey}}" MouseUp="paintSurface_MouseUp" Margin="0,0,230,45"/>
         <Label x:Name="labelButtons" Content="Подсказка по клавишам" HorizontalAlignment="Left" Margin="1050,0,0,0" VerticalAlignment="Center" Width="220" Height="564" HorizontalContentAlignment="Center" Background="{x:Null}" FontFamily="GOST type B" FontSize="14"/>
         <Label x:Name="labelMousePoint" Content="Данные Указателя Мыши" HorizontalAlignment="Left" Margin="10,544,0,0" VerticalAlignment="Top" Height="30" Width="452" FontFamily="GOST type B" FontSize="16" HorizontalContentAlignment="Center"/>
+        <Slider x:Name="sliderT" HorizontalAlignment="Left" Margin="690,544,0,0" VerticalAlignment="Stretch" Width="200" Height="30" Maximum="100" SmallChange="0" Value="50" ValueChanged="sliderT_ValueChanged"/>
     </Grid>
 </Window>

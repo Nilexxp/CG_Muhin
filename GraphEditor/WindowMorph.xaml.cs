@@ -1,17 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace GraphEditor
@@ -24,45 +17,99 @@ namespace GraphEditor
         const double ShiftX = 1.1;
         const double ShiftY = 1.1;
         const double RotateAngle = 0.175;
-        public WindowMorph()
-        {
-            InitializeComponent();
-            ResetControls();
 
+        /// <summary>
+        /// Создание красной линии по координатам начала и конца
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        Line CreateRedLine(int x1, int y1, int x2, int y2)
+        {
             Line line = new Line
             {
                 Stroke = SystemColors.WindowFrameBrush,
-                X1 = 200,
-                Y1 = 200,
-                X2 = 100,
-                Y2 = 100
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2
             };
             line.Stroke = new SolidColorBrush(Colors.Red);
             line.Name = "line_" + numberLine + 101;
             paintSurface.Children.Add(line);
-            Line line1 = new Line
+
+            return line;
+        }
+
+        /// <summary>
+        /// Создание синей линии по координатам начала и конца
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        Line CreateBlueLine(int x1, int y1, int x2, int y2)
+        {
+            Line line = new Line
             {
                 Stroke = SystemColors.WindowFrameBrush,
-                X1 = 250,
-                Y1 = 200,
-                X2 = 150,
-                Y2 = 100
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2
             };
-            line1.Stroke = new SolidColorBrush(Colors.Green);
-            line1.Name = "line_" + numberLine + 100;
-            paintSurface.Children.Add(line1);
-            Point point1 = new Point(line.X1 * 0.5 + line1.X1 * 0.5, line.Y1 * 0.5 + line1.Y1 * 0.5);
-            Point point2 = new Point(line.X2 * 0.5 + line1.X2 * 0.5, line.Y2 * 0.5 + line1.Y2 * 0.5);
-            PointCollection points = new PointCollection();
-            points.Add(point1);
-            points.Add(point2);
+            line.Stroke = new SolidColorBrush(Colors.Blue);
+            line.Name = "line_" + numberLine + 100;
+            paintSurface.Children.Add(line);
+
+            return line;
+        }
+
+        /// <summary>
+        /// Создание новой линии
+        /// </summary>
+        /// <param name="red">Первая линия</param>
+        /// <param name="blue">Вторая линия</param>
+        /// <param name="t">Коэфициента, первая к второй линии</param>
+        /// <returns>Отрисованная линия</returns>
+        Polyline CreateMidLine(Line red, Line blue, double t)
+        {
+            Point upperPoint = new Point((1 - t) * red.X1 + t * blue.X1, (1 - t) * red.Y1 + t * blue.Y1);
+            Point lowerpoint = new Point((1 - t) * red.X2 + t * blue.X2, (1 - t) * red.Y2 + t * blue.Y2);
             Polyline polyline = new Polyline();
-            polyline.Stroke = Brushes.Blue;
-            polyline.StrokeThickness = 2;
-            polyline.HorizontalAlignment = HorizontalAlignment.Left;
-            polyline.VerticalAlignment = VerticalAlignment.Center;
-            polyline.Points = points;
+
+            // Получение цветов от линий
+            Color colorRedLine = ((SolidColorBrush)red.Stroke).Color;
+            Color colorBlueLine = ((SolidColorBrush)blue.Stroke).Color;
+            // Получение среднего цвета
+            Color color = new Color();
+            color.A = 255;
+            color.R = (byte)((1 - t) * colorRedLine.R + t * colorBlueLine.R);
+            color.G = (byte)((1 - t) * colorRedLine.G + t * colorBlueLine.G);
+            color.B = (byte)((1 - t) * colorRedLine.B + t * colorBlueLine.B);
+            // Заолнение нового цвета
+            polyline.Stroke = new SolidColorBrush(color);
+
+            // Добавление точек в линию
+            polyline.Points.Add(upperPoint);
+            polyline.Points.Add(lowerpoint);
+            // Отрисовка линии
             paintSurface.Children.Add(polyline);
+
+            return polyline;
+        }
+
+        public WindowMorph()
+        {
+            InitializeComponent();
+            ResetControls();
+            // Первая линия (красная)
+            Line red = CreateRedLine(200, 200, 100, 100);
+            // Вторая линия (синяя)
+            Line blue = CreateBlueLine(250, 200, 150, 100);
+            // Создание новой линии
+            CreateMidLine(red, blue, sliderT.Value / 100);            
         }
         Point currentPoint = new Point();
         Line lineCurrent = null;
@@ -72,11 +119,13 @@ namespace GraphEditor
         {
             public double x;
             public double y;
+            public Color color;
 
             public Marker(double value_x, double value_y)
             {
                 x = value_x;
                 y = value_y;
+                color = Colors.Blue;
             }
         }
 
@@ -122,18 +171,18 @@ namespace GraphEditor
                         {
                             line = null; continue;
                         }
+
                         if (line.Name == "line_" + numberLine)
-                        {
                             break;
-                        }
                         else
-                        {
                             line = null;
-                        }
                     }
-                    line.X2 = e.GetPosition(this).X;
-                    line.Y2 = e.GetPosition(this).Y;
-                    paintSurface.InvalidateVisual();
+                    if (line != null)
+                    {
+                        line.X2 = e.GetPosition(this).X;
+                        line.Y2 = e.GetPosition(this).Y;
+                        paintSurface.InvalidateVisual();
+                    }
                 }
             }
             else
@@ -155,6 +204,7 @@ namespace GraphEditor
                     {
                         marker.x = line.X1;
                         marker.y = line.Y1;
+                        marker.color = ((SolidColorBrush)line.Stroke).Color;
                         pointIndex = 0;
                         lineCurrent = line;
                         paintSurface.InvalidateVisual();
@@ -163,12 +213,14 @@ namespace GraphEditor
                     {
                         marker.x = line.X2;
                         marker.y = line.Y2;
+                        marker.color = ((SolidColorBrush)line.Stroke).Color;
                         pointIndex = 1;
                         lineCurrent = line;
                         paintSurface.InvalidateVisual();
                     }
 
                 }
+
                 if (marker.x != -1 && marker.y != -1)
                 {
                     foreach (Object foundEllipse in paintSurface.Children)
@@ -187,8 +239,8 @@ namespace GraphEditor
                     }
                     elli = new Ellipse
                     {
-                        Stroke = new SolidColorBrush(Colors.Blue),
-                        Fill = new SolidColorBrush(Colors.Blue),
+                        Stroke = new SolidColorBrush(marker.color),
+                        Fill = new SolidColorBrush(marker.color),
                         Width = 10,
                         Height = 10
                     };
@@ -219,61 +271,27 @@ namespace GraphEditor
 
         private void paintSurface_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            numberLine++;
-            Polyline polyline1;
-            Line line1 = null;
-            Line line2 = null;
-            foreach (object foundPolyline in paintSurface.Children)
-            {
-                try
-                {
-                    polyline1 = (Polyline)foundPolyline;
-                    paintSurface.Children.Remove(polyline1);
-                    foreach (object line in paintSurface.Children)
-                    {
-                        try
-                        {
-                            if (line1 == null)
-                            {
-                                line1 = (Line)line;
-                            }
-                            else
-                            {
-                                line2 = (Line)line;
-                                break;
-                            }
-                        }
-                        catch
-                        {
-                            continue;
-                        }
-
-                    }
-                    Point point1 = new Point(line1.X1 * 0.5 + line2.X1 * 0.5, line1.Y1 * 0.5 + line2.Y1 * 0.5);
-                    Point point2 = new Point(line1.X2 * 0.5 + line2.X2 * 0.5, line1.Y2 * 0.5 + line2.Y2 * 0.5);
-                    PointCollection points = new PointCollection();
-                    points.Add(point1);
-                    points.Add(point2);
-                    Polyline polyline = new Polyline();
-                    polyline.Stroke = Brushes.Blue;
-                    polyline.StrokeThickness = 2;
-                    polyline.HorizontalAlignment = HorizontalAlignment.Left;
-                    polyline.VerticalAlignment = VerticalAlignment.Center;
-                    polyline.Points = points;
-                    paintSurface.Children.Add(polyline);
-                    break;
-                }
-                catch (Exception)
-                {
-                    polyline1 = null; continue;
-                }
-            }
+            LinesChanged(sliderT.Value / 100);
         }
 
         private void ResetControls()
         {
             labelButtons.Content =
-@"E: Выход из окна морфинга";
+@"X: Зеркалирование по OX   
+Y: Зеркалирование по OY 
+→: увеличение по OX 
+←: уменьшение по OX 
+↑: увеличение по OY 
+↓: уменьшение по OY 
+N: Проекция на OX 
+M: Проекция на OY 
+R: Поворот
+S: Сохранение 
+L: Загрузка
+Изменяйте значение t 
+на слайдере снизу окна
+
+E: Выход из окна морфинга";
         }
 
         string saveFilter = "Файлы сохранения морфинга (*.msave)|*.msave|Любые типы файлов (*.*)|*.*";
@@ -288,7 +306,6 @@ namespace GraphEditor
             if (saveFileDialog.ShowDialog() == true)
                 File.WriteAllLines(saveFileDialog.FileName, data.Split('\n'));
         }
-
         //массив, строка - одна линия, х1,у1,х2,у2
         private double[,] ReadSave()
         {
@@ -328,7 +345,7 @@ namespace GraphEditor
                         lineCurrent.X1 = ((lineCurrent.X1 - (paintSurface.ActualWidth / 2)) / ShiftX) + (paintSurface.ActualWidth / 2);
                         lineCurrent.X2 = ((lineCurrent.X2 - (paintSurface.ActualWidth / 2)) / ShiftX) + (paintSurface.ActualWidth / 2);
                     }
-
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 case Key.Up:
                     //увеличение масштаба по Y
@@ -337,6 +354,7 @@ namespace GraphEditor
                         lineCurrent.Y1 = ((lineCurrent.Y1 - (paintSurface.ActualHeight / 2)) * ShiftY) + (paintSurface.ActualHeight / 2);
                         lineCurrent.Y2 = ((lineCurrent.Y2 - (paintSurface.ActualHeight / 2)) * ShiftY) + (paintSurface.ActualHeight / 2);
                     }
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 case Key.Right:
 
@@ -346,6 +364,7 @@ namespace GraphEditor
                         lineCurrent.X1 = ((lineCurrent.X1 - (paintSurface.ActualWidth / 2)) * ShiftX) + (paintSurface.ActualWidth / 2);
                         lineCurrent.X2 = ((lineCurrent.X2 - (paintSurface.ActualWidth / 2)) * ShiftX) + (paintSurface.ActualWidth / 2);
                     }
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 case Key.Down:
                     //уменьшение масштаба по Y
@@ -354,6 +373,7 @@ namespace GraphEditor
                         lineCurrent.Y1 = ((lineCurrent.Y1 - (paintSurface.ActualHeight / 2)) / ShiftY) + (paintSurface.ActualHeight / 2);
                         lineCurrent.Y2 = ((lineCurrent.Y2 - (paintSurface.ActualHeight / 2)) / ShiftY) + (paintSurface.ActualHeight / 2);
                     }
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 #endregion
                 #region проекции
@@ -364,6 +384,7 @@ namespace GraphEditor
                         lineCurrent.Y1 = paintSurface.ActualHeight / 2;
                         lineCurrent.Y2 = paintSurface.ActualHeight / 2;
                     }
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 case Key.N:
                     //проекция на Y
@@ -372,6 +393,7 @@ namespace GraphEditor
                         lineCurrent.X1 = paintSurface.ActualWidth / 2;
                         lineCurrent.X2 = paintSurface.ActualWidth / 2;
                     }
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 #endregion
                 #region поворот
@@ -389,6 +411,7 @@ namespace GraphEditor
                         lineCurrent.Y2 = tenpY2;
                         paintSurface.InvalidateVisual();
                     }
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 #endregion
                 #region зеркалирования
@@ -399,7 +422,7 @@ namespace GraphEditor
                         lineCurrent.X1 = (paintSurface.ActualWidth / 2) - (lineCurrent.X1 - (paintSurface.ActualWidth / 2));
                         lineCurrent.X2 = (paintSurface.ActualWidth / 2) - (lineCurrent.X2 - (paintSurface.ActualWidth / 2));
                     }
-
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 case Key.Y:
                     //зеркалирование по Y
@@ -408,7 +431,7 @@ namespace GraphEditor
                         lineCurrent.Y1 = (paintSurface.ActualHeight / 2) - (lineCurrent.Y1 - (paintSurface.ActualHeight / 2));
                         lineCurrent.Y2 = (paintSurface.ActualHeight / 2) - (lineCurrent.Y2 - (paintSurface.ActualHeight / 2));
                     }
-
+                    LinesChanged(sliderT.Value / 100);
                     break;
                 #endregion
                 #region загрузка и сохранение
@@ -436,28 +459,96 @@ namespace GraphEditor
                     //загрузка
                     double[,] save = ReadSave();
                     if (save != null)
-                        //перебор и добавление
-                        for (int i = 0; i < save.GetLength(0); i++)
+
+                    //поиск и перезаполнение данных
+                    {
+                        Line line1 = null;
+                        Line line2 = null;
+                        try
                         {
-                            //создается новая линия
-                            Line newline = new Line
+                            foreach (object line in paintSurface.Children)
                             {
-                                Stroke = new SolidColorBrush(Colors.Black),
-                                X1 = save[i, 0],
-                                Y1 = save[i, 1],
-                                X2 = save[i, 2],
-                                Y2 = save[i, 3]
-                            };
-                            //currentPoint = e.GetPosition(this);
-                            newline.Name = "line_" + numberLine;
-                            paintSurface.Children.Add(newline);
+                                try
+                                {
+                                    if (line1 == null)
+                                    {
+                                        line1 = (Line)line;
+                                    }
+                                    else
+                                    {
+                                        line2 = (Line)line;
+                                        break;
+                                    }
+                                }
+                                catch
+                                {
+                                    continue;
+                                }
+
+                            }
+                            paintSurface.Children.Remove(line1);
+                            paintSurface.Children.Remove(line2);
+                            line1 = CreateRedLine((int)save[0, 0], (int)save[0, 1], (int)save[0, 2], (int)save[0, 3]);
+                            line2 = CreateBlueLine((int)save[1, 0], (int)save[1, 1], (int)save[1, 2], (int)save[1, 3]);
+                            break;
                         }
+                        catch (Exception)
+                        {
+                        }
+                    }
                     break;
                 #endregion
                 case Key.E:
                     //сохранение
                     this.Close();
                     break;
+            }
+        }
+
+        private void sliderT_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            LinesChanged(sliderT.Value / 100);
+        }
+
+        private void LinesChanged(double t)
+        {
+            numberLine++;
+            Polyline polyline1;
+            Line line1 = null;
+            Line line2 = null;
+            foreach (object foundPolyline in paintSurface.Children)
+            {
+                try
+                {
+                    polyline1 = (Polyline)foundPolyline;
+                    paintSurface.Children.Remove(polyline1);
+                    foreach (object line in paintSurface.Children)
+                    {
+                        try
+                        {
+                            if (line1 == null)
+                            {
+                                line1 = (Line)line;
+                            }
+                            else
+                            {
+                                line2 = (Line)line;
+                                break;
+                            }
+                        }
+                        catch
+                        {
+                            continue;
+                        }
+
+                    }
+                    CreateMidLine(line1, line2, sliderT.Value / 100);
+                    break;
+                }
+                catch (Exception)
+                {
+                    polyline1 = null; continue;
+                }
             }
         }
     }
