@@ -55,12 +55,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="3DWindow.xaml.cs">
+      <DependentUpon>3DWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowMorph.xaml.cs">
       <DependentUpon>WindowMorph.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowSpline.xaml.cs">
       <DependentUpon>WindowSpline.xaml</DependentUpon>
     </Compile>
+    <Page Include="3DWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
