@@ -73,6 +73,7 @@ L: Загрузка
 NumPad 1: Морфинг
 NumPad 2: Сплайн
 NumPad 3: Дерево
+NumPad 4: Окно с 3D графикой 
 
 E: Выход";
         }
@@ -313,6 +314,10 @@ E: Выход";
                 case Key.NumPad2:
                     WindowSpline spline = new WindowSpline();
                     spline.Show();
+                    break;
+                case Key.NumPad4:
+                    _3DWindow cube = new _3DWindow();
+                    cube.Show();
                     break;
                 #endregion
                 case Key.E:
